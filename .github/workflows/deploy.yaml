@@ -21,12 +21,12 @@ jobs:
 
       - name: Build & Push BLUE image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:blue ./app
+          docker build --pull -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:blue ./app
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:blue
 
       - name: Build & Push GREEN image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:green ./app
+          docker build --pull -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:green ./app
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:green
 
   deploy:

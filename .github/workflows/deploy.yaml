@@ -58,6 +58,7 @@ jobs:
             
             cd /opt/app
             sudo docker pull saffirescale/flask-app:$TARGET
+            sudo rm -f /etc/nginx/sites-enabled/default
             sudo docker-compose up -d flask_$TARGET
 
             /opt/deploy/health_check.sh $PORT

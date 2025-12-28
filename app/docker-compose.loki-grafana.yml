@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: userdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  web:
+    build: .
+    depends_on:
+      - db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: userdb
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+    ports:
+      - "8080:80"
+    restart: always
+    # The following logging section requires the Loki Docker logging driver plugin.
+    # For most local setups, this plugin is NOT installed by default and will cause errors.
+    # To run locally without errors, comment out or remove the logging section below:
+    # logging:
+    #   driver: loki
+    #   options:
+    #     loki-url: "http://loki:3100/loki/api/v1/push"
+    #     loki-external-labels: app=web,namespace=develop
+  loki:
+    image: grafana/loki:2.9.2
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+  grafana:
+    image: grafana/grafana:10.2.3
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    depends_on:
+      - loki
+volumes:
+  pgdata:

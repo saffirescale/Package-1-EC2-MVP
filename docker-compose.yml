@@ -1,0 +1,10 @@
+services:
+  flask_blue:
+    image: saffirescale/flask-app:blue
+    ports:
+      - "5001:5000"
+
+  flask_green:
+    image: saffirescale/flask-app:green
+    ports:
+      - "5002:5000"

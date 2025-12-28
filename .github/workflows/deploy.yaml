@@ -1,0 +1,38 @@
+name: Blue-Green Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            set -e
+
+            CURRENT=$(cat /opt/deploy/current_color)
+
+            if [ "$CURRENT" = "blue" ]; then
+              TARGET=green
+              PORT=5002
+            else
+              TARGET=blue
+              PORT=5001
+            fi
+
+            echo "Deploying $TARGET"
+
+            docker pull saffirescale/flask-app:$TARGET
+            docker compose up -d flask_$TARGET
+
+            /opt/deploy/health_check.sh $PORT
+
+            sudo /opt/deploy/switch_color.sh

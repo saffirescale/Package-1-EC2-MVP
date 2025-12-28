@@ -62,6 +62,7 @@ jobs:
             sudo docker-compose rm -f flask_$TARGET || true
             sudo docker rmi saffirescale/flask-app:$TARGET || true
             sudo docker pull saffirescale/flask-app:$TARGET
+            sudo docker-compose pull flask_$TARGET
             sudo docker-compose up -d flask_$TARGET
 
             /opt/deploy/health_check.sh $PORT

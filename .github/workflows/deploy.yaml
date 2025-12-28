@@ -54,8 +54,8 @@ jobs:
 
             echo "Deploying $TARGET"
 
-            docker pull saffirescale/flask-app:$TARGET
-            docker compose up -d flask_$TARGET
+            sudo docker pull saffirescale/flask-app:$TARGET
+            sudo docker compose up -d flask_$TARGET
 
             /opt/deploy/health_check.sh $PORT
 

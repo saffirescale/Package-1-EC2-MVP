@@ -21,12 +21,12 @@ jobs:
 
       - name: Build & Push BLUE image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:blue ./app
+          docker build --pull -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:blue ./app
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:blue
 
       - name: Build & Push GREEN image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:green ./app
+          docker build --pull -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:green ./app
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-app:green
 
   deploy:
@@ -57,6 +57,10 @@ jobs:
             echo "Deploying $TARGET"
             
             cd /opt/app
+            sudo rm -f /etc/nginx/sites-enabled/default
+            sudo docker-compose stop flask_$TARGET || true
+            sudo docker-compose rm -f flask_$TARGET || true
+            sudo docker rmi saffirescale/flask-app:$TARGET || true
             sudo docker pull saffirescale/flask-app:$TARGET
             sudo docker-compose up -d flask_$TARGET
 

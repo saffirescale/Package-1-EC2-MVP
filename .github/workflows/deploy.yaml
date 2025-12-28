@@ -55,7 +55,8 @@ jobs:
             fi
 
             echo "Deploying $TARGET"
-
+            
+            cd /opt/app
             sudo docker pull saffirescale/flask-app:$TARGET
             sudo docker-compose up -d flask_$TARGET
 
